@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: production-rag-pipeline
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.address 0.0.0.0 --server.port $PORT --server.headless true
+    healthCheckPath: /_stcore/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+      - key: CHROMA_DB_DIR
+        value: /var/data/chroma_db
+      - key: UPLOAD_DIR
+        value: /var/data/uploads
+    disk:
+      name: rag-data
+      mountPath: /var/data
+      sizeGB: 1
